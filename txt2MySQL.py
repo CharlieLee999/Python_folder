@@ -139,7 +139,7 @@ if __name__ == '__main__' :
     mydb = mysql.connector.connect(
             host = "localhost",
             user = "root",
-            passwd = "charlieli",
+            passwd = "youknow",
             database = "eonTest"
             )
     
