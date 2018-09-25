@@ -134,6 +134,33 @@ def text2sql(mydb, cursor):
     print('\n sqlalchemy solution timecost-> ' + str(end-st))
 
 
+def _readColumnFromDB(cursor, tableName, colIdx = 1, rowStart=0, numEntries=10):
+    '''
+    read a column from a database
+    ### TODO: input parameter-> sqlLine
+    ##* limit rowStart, numEntry *## rowStart-> index from 0
+    '''
+    
+    ### Get the column names of the table 'tableName'
+    cursor.execute('SELECT * FROM ' + tableName + ' LIMIT 0')
+    tableColName = cursor.column_names
+    cursor.fetchall() # Required to execute again, or -> unread result found
+    
+    sqlStr = "SELECT " + tableColName[colIdx] + " From " + tableName + " LIMIT "\
+            + str(rowStart) + ", " + str(numEntries)
+#    sqlStr = "SELECT loads FROM loads LIMIT " + str(rowStart) + ", " + str(numEntries)
+    colData = None
+    try:
+        cursor.execute(sqlStr)
+        colData = cursor.fetchall() ## colData is a list of tuple 
+    except Exception as e:
+            print(":( Something wrong when reading column from database")
+            print(e)
+    ### Convert list of tuple to float list
+    result = [item[0] for item in colData]
+    return result
+
+
 if __name__ == '__main__' :
     ## CREATE CONNECTION 
     mydb = mysql.connector.connect(
@@ -144,8 +171,13 @@ if __name__ == '__main__' :
             )
     
     cursor = mydb.cursor()
+    pass
     try:
-        text2sql(mydb, cursor)
+        pass
+        resData = _readColumnFromDB(cursor, tableName="loads", colIdx=1, rowStart=0, numEntries=10)
+        print("Successfully got the result")
+        print(resData)
+#        text2sql(mydb, cursor)
     except Exception as e:
         print(e)
         cursor.close()
